@@ -26,6 +26,7 @@
     form { display: flex; flex-direction: column; margin: 10px; }
     form input, form select { margin-bottom: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
     form button { background: green; margin-top: 5px; }
+    img.product-img { max-width: 100%; height: auto; border-radius: 5px; margin-bottom: 5px; }
   </style>
 </head>
 <body>
@@ -72,11 +73,26 @@
 
 <script>
 const products=[
-  {id:1, nom:"Robe Fleurie", prix:25},{id:2, nom:"Top Noir", prix:15},{id:3, nom:"Jean Slim", prix:30},{id:4, nom:"T-shirt Blanc", prix:10},
-  {id:5, nom:"Chaussures Sport", prix:40},{id:6, nom:"Sac à Main", prix:35},{id:7, nom:"Montre Classique", prix:50},{id:8, nom:"Jupe Plissée", prix:22},
-  {id:9, nom:"Pull Hiver", prix:28},{id:10, nom:"Bottes", prix:45},{id:11, nom:"Casquette", prix:12},{id:12, nom:"Écharpe", prix:18},
-  {id:13, nom:"Veste", prix:38},{id:14, nom:"Short Été", prix:20},{id:15, nom:"Sandales", prix:25},{id:16, nom:"Chemise Homme", prix:27},
-  {id:17, nom:"Pull Homme", prix:30},{id:18, nom:"Robe Soirée", prix:50},{id:19, nom:"Jean Femme", prix:35},{id:20, nom:"Sac de Sport", prix:40}
+  {id:1, nom:"Robe Fleurie", prix:25, img:"https://via.placeholder.com/250x300?text=Robe+Fleurie"},
+  {id:2, nom:"Top Noir", prix:15, img:"https://via.placeholder.com/250x300?text=Top+Noir"},
+  {id:3, nom:"Jean Slim", prix:30, img:"https://via.placeholder.com/250x300?text=Jean+Slim"},
+  {id:4, nom:"T-shirt Blanc", prix:10, img:"https://via.placeholder.com/250x300?text=Tshirt+Blanc"},
+  {id:5, nom:"Chaussures Sport", prix:40, img:"https://via.placeholder.com/250x300?text=Chaussures+Sport"},
+  {id:6, nom:"Sac à Main", prix:35, img:"https://via.placeholder.com/250x300?text=Sac+à+Main"},
+  {id:7, nom:"Montre Classique", prix:50, img:"https://via.placeholder.com/250x300?text=Montre+Classique"},
+  {id:8, nom:"Jupe Plissée", prix:22, img:"https://via.placeholder.com/250x300?text=Jupe+Plissée"},
+  {id:9, nom:"Pull Hiver", prix:28, img:"https://via.placeholder.com/250x300?text=Pull+Hiver"},
+  {id:10, nom:"Bottes", prix:45, img:"https://via.placeholder.com/250x300?text=Bottes"},
+  {id:11, nom:"Casquette", prix:12, img:"https://via.placeholder.com/250x300?text=Casquette"},
+  {id:12, nom:"Écharpe", prix:18, img:"https://via.placeholder.com/250x300?text=Écharpe"},
+  {id:13, nom:"Veste", prix:38, img:"https://via.placeholder.com/250x300?text=Veste"},
+  {id:14, nom:"Short Été", prix:20, img:"https://via.placeholder.com/250x300?text=Short+Été"},
+  {id:15, nom:"Sandales", prix:25, img:"https://via.placeholder.com/250x300?text=Sandales"},
+  {id:16, nom:"Chemise Homme", prix:27, img:"https://via.placeholder.com/250x300?text=Chemise+Homme"},
+  {id:17, nom:"Pull Homme", prix:30, img:"https://via.placeholder.com/250x300?text=Pull+Homme"},
+  {id:18, nom:"Robe Soirée", prix:50, img:"https://via.placeholder.com/250x300?text=Robe+Soirée"},
+  {id:19, nom:"Jean Femme", prix:35, img:"https://via.placeholder.com/250x300?text=Jean+Femme"},
+  {id:20, nom:"Sac de Sport", prix:40, img:"https://via.placeholder.com/250x300?text=Sac+de+Sport"}
 ];
 
 let cart=[];
@@ -94,6 +110,7 @@ function renderProducts(){
     const div=document.createElement("div");
     div.className="product";
     div.innerHTML=`
+      <img src="${p.img}" alt="${p.nom}" class="product-img">
       <a href="#">${p.nom}</a>
       <p>$${p.prix}</p>
       <button onclick="addToCart(${p.id})">Ajouter au panier</button>
@@ -142,7 +159,6 @@ cartToggle.addEventListener("click", ()=>{
   cartPanel.classList.toggle("open");
 });
 
-// Fermer le panier quand on clique en dehors
 document.addEventListener("click", (e)=>{
   if(!cartPanel.contains(e.target) && !cartToggle.contains(e.target)){
     cartPanel.classList.remove("open");
