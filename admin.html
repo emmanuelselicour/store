@@ -40,46 +40,28 @@ button:hover { background: #34495e; }
 </div>
 
 <script>
-const CORRECT_PASSWORD = "04004749"; // mot de passe admin
-const FORM_ID = "commande"; // Form ID Netlify
-let orders = [];
-
 function checkLogin(){
   const input = document.getElementById("password").value;
-  if(input === CORRECT_PASSWORD){
+  if(input === "04004749"){
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
-    fetchOrders();
+    fetchOrders(input);
   } else {
     document.getElementById("errorMsg").style.display = "block";
   }
 }
 
-// Simuler récupération depuis Netlify Forms
-async function fetchOrders(){
+async function fetchOrders(password){
   try {
-    const res = await fetch(`https://api.netlify.com/api/v1/forms/68aeae82b253f900084dc5d4/submissions`,{
-      headers:{ "Authorization":"Bearer nfp_guuy1oVgA3kZQwj2T9dayVxjEyyhbdQHdad4" }
-    });
-    const submissions = await res.json();
-    orders = submissions.map(sub => ({
-      nom: sub.data.nom,
-      prenom: sub.data.prenom,
-      email: sub.data.email,
-      numero: sub.data.numero,
-      produits: sub.data.produit.split(", "),
-      prix: sub.data.prix.split(", "),
-      adresse: sub.data.adresse,
-      paiement: sub.data.paiement,
-      idpaiement: sub.data.idpaiement
-    }));
-    renderOrders();
+    const res = await fetch(`/.netlify/functions/getOrders?password=${password}`);
+    const orders = await res.json();
+    renderOrders(orders);
   } catch(err){
     console.error(err);
   }
 }
 
-function renderOrders(){
+function renderOrders(orders){
   const table = document.getElementById("ordersTable");
   table.innerHTML = "";
   orders.forEach((order,index)=>{
@@ -107,6 +89,5 @@ function toggleDetails(index){
   details.style.display = details.style.display === "block" ? "none" : "block";
 }
 </script>
-
 </body>
 </html>
