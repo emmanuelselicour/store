@@ -7,16 +7,19 @@
 body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
 h1 { text-align: center; }
 table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: center; vertical-align: top; }
 button { padding: 5px 10px; cursor: pointer; border-radius: 5px; border: none; background: #2c3e50; color: white; }
 button:hover { background: #34495e; }
-.details { display: none; margin-top: 10px; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+.details { max-height: 0; overflow: hidden; margin-top: 10px; padding: 0 10px; background: #fff; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); transition: max-height 0.4s ease, padding 0.4s ease; }
+.details.open { max-height: 500px; padding: 10px; }
 .cart-item { display: flex; justify-content: space-between; margin-bottom: 5px; }
+#loginBox { max-width:400px;margin:auto;text-align:center; padding:20px; background:#fff; border-radius:10px; box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+input { padding: 8px; width: 80%; margin-bottom: 10px; border-radius:5px; border:1px solid #ccc;}
 </style>
 </head>
 <body>
 
-<div id="loginBox" style="max-width:400px;margin:auto;text-align:center;">
+<div id="loginBox">
   <h2>🔐 Connexion Admin</h2>
   <input type="password" id="password" placeholder="Mot de passe">
   <button onclick="checkLogin()">Se connecter</button>
@@ -55,7 +58,7 @@ function checkLogin(){
   }
 }
 
-// Simuler récupération depuis Netlify Forms
+// Récupération depuis Netlify Forms
 async function fetchOrders(){
   try {
     const res = await fetch(`https://api.netlify.com/api/v1/forms/68aeae82b253f900084dc5d4/submissions`,{
@@ -89,7 +92,8 @@ function renderOrders(){
       <td>${order.prenom}</td>
       <td>${order.email}</td>
       <td>${order.numero}</td>
-      <td><button onclick="toggleDetails(${index})">PLUS ></button>
+      <td>
+        <button onclick="toggleDetails(${index})">PLUS ></button>
         <div class="details" id="details${index}">
           ${order.produits.map((p,i)=>`<div class="cart-item">${p} - $${order.prix[i]}</div>`).join("")}
           <div><strong>Total : $${order.prix.reduce((a,b)=>parseFloat(a)+parseFloat(b),0)}</strong></div>
@@ -104,7 +108,7 @@ function renderOrders(){
 
 function toggleDetails(index){
   const details = document.getElementById(`details${index}`);
-  details.style.display = details.style.display === "block" ? "none" : "block";
+  details.classList.toggle("open");
 }
 </script>
 
