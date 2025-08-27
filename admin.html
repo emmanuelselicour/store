@@ -4,19 +4,21 @@
 <meta charset="UTF-8">
 <title>EDS Mini Boutique - Admin</title>
 <style>
-body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+body { font-family: Arial, sans-serif; background: #f0f2f5; margin:0; padding:20px; }
 h1 { text-align: center; }
 table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: center; vertical-align: top; }
 button { padding: 5px 10px; cursor: pointer; border-radius: 5px; border: none; background: #2c3e50; color: white; }
 button:hover { background: #34495e; }
-.details { display: none; margin-top: 10px; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+.details { display: none; margin-top: 10px; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); text-align: left; }
 .cart-item { display: flex; justify-content: space-between; margin-bottom: 5px; }
+#loginBox { max-width:400px; margin:auto; text-align:center; padding: 20px; background: #fff; border-radius: 10px; box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+input { padding: 8px; width: 80%; margin-bottom: 10px; border-radius:5px; border:1px solid #ccc;}
 </style>
 </head>
 <body>
 
-<div id="loginBox" style="max-width:400px;margin:auto;text-align:center;">
+<div id="loginBox">
   <h2>🔐 Connexion Admin</h2>
   <input type="password" id="password" placeholder="Mot de passe">
   <button onclick="checkLogin()">Se connecter</button>
@@ -40,27 +42,31 @@ button:hover { background: #34495e; }
 </div>
 
 <script>
+// Mot de passe admin
 function checkLogin(){
   const input = document.getElementById("password").value;
   if(input === "04004749"){
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
-    fetchOrders(input);
+    renderOrders(ordersData); // Affiche les commandes simulées
   } else {
     document.getElementById("errorMsg").style.display = "block";
   }
 }
 
-async function fetchOrders(password){
-  try {
-    const res = await fetch(`/.netlify/functions/getOrders?password=${password}`);
-    const orders = await res.json();
-    renderOrders(orders);
-  } catch(err){
-    console.error(err);
+// Données simulées (remplace plus tard par Netlify Forms)
+const ordersData = [
+  {
+    nom:"Jean", prenom:"Pierre", email:"jean@example.com", numero:"50912345678",
+    produits:["Robe Fleurie","Chaussures Sport"], prix:["25","40"], adresse:"Port-au-Prince", paiement:"MonCash", idpaiement:"MC12345"
+  },
+  {
+    nom:"Marie", prenom:"Claude", email:"marie@example.com", numero:"50998765432",
+    produits:["Top Noir","Sac à Main"], prix:["15","35"], adresse:"Cap-Haïtien", paiement:"NatCash", idpaiement:"NC67890"
   }
-}
+];
 
+// Fonction pour afficher les commandes
 function renderOrders(orders){
   const table = document.getElementById("ordersTable");
   table.innerHTML = "";
@@ -71,7 +77,8 @@ function renderOrders(orders){
       <td>${order.prenom}</td>
       <td>${order.email}</td>
       <td>${order.numero}</td>
-      <td><button onclick="toggleDetails(${index})">PLUS ></button>
+      <td>
+        <button onclick="toggleDetails(${index})">PLUS ></button>
         <div class="details" id="details${index}">
           ${order.produits.map((p,i)=>`<div class="cart-item">${p} - $${order.prix[i]}</div>`).join("")}
           <div><strong>Total : $${order.prix.reduce((a,b)=>parseFloat(a)+parseFloat(b),0)}</strong></div>
@@ -84,10 +91,12 @@ function renderOrders(orders){
   });
 }
 
+// Fonction pour afficher/masquer les détails
 function toggleDetails(index){
   const details = document.getElementById(`details${index}`);
   details.style.display = details.style.display === "block" ? "none" : "block";
 }
 </script>
+
 </body>
 </html>
