@@ -42,48 +42,54 @@ input { padding: 8px; width: 80%; margin-bottom: 10px; border-radius:5px; border
 </div>
 
 <script>
-// Mot de passe admin
+const CORRECT_PASSWORD = "04004749";
+const API_KEY = "nfp_guuy1oVgA3kZQwj2T9dayVxjEyyhbdQHdad4"; // ton API Key Netlify
+const FORM_ID = "68aeae82b253f900084dc5d4"; // ton Form ID
+
 function checkLogin(){
   const input = document.getElementById("password").value;
-  if(input === "04004749"){
+  if(input === CORRECT_PASSWORD){
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
-    renderOrders(ordersData); // Affiche les commandes simulées
+    fetchOrders();
   } else {
     document.getElementById("errorMsg").style.display = "block";
   }
 }
 
-// Données simulées (remplace plus tard par Netlify Forms)
-const ordersData = [
-  {
-    nom:"Jean", prenom:"Pierre", email:"jean@example.com", numero:"50912345678",
-    produits:["Robe Fleurie","Chaussures Sport"], prix:["25","40"], adresse:"Port-au-Prince", paiement:"MonCash", idpaiement:"MC12345"
-  },
-  {
-    nom:"Marie", prenom:"Claude", email:"marie@example.com", numero:"50998765432",
-    produits:["Top Noir","Sac à Main"], prix:["15","35"], adresse:"Cap-Haïtien", paiement:"NatCash", idpaiement:"NC67890"
+// Récupère les commandes depuis Netlify Forms
+async function fetchOrders(){
+  try{
+    const res = await fetch(`https://api.netlify.com/api/v1/forms/${FORM_ID}/submissions`, {
+      headers: { "Authorization": `Bearer ${API_KEY}` }
+    });
+    const data = await res.json();
+    renderOrders(data);
+  } catch(err){
+    console.error("Erreur récupération Netlify:", err);
   }
-];
+}
 
-// Fonction pour afficher les commandes
 function renderOrders(orders){
   const table = document.getElementById("ordersTable");
   table.innerHTML = "";
   orders.forEach((order,index)=>{
+    const d = order.data;
+    const produits = d.produit ? d.produit.split(",") : [];
+    const prix = d.prix ? d.prix.split(",") : [];
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${order.nom}</td>
-      <td>${order.prenom}</td>
-      <td>${order.email}</td>
-      <td>${order.numero}</td>
+      <td>${d.nom || ""}</td>
+      <td>${d.prenom || ""}</td>
+      <td>${d.email || ""}</td>
+      <td>${d.numero || ""}</td>
       <td>
         <button onclick="toggleDetails(${index})">PLUS ></button>
         <div class="details" id="details${index}">
-          ${order.produits.map((p,i)=>`<div class="cart-item">${p} - $${order.prix[i]}</div>`).join("")}
-          <div><strong>Total : $${order.prix.reduce((a,b)=>parseFloat(a)+parseFloat(b),0)}</strong></div>
-          <div>Méthode: ${order.paiement} | ID: ${order.idpaiement}</div>
-          <div>Adresse: ${order.adresse}</div>
+          ${produits.map((p,i)=>`<div class="cart-item">${p} - $${prix[i]||"0"}</div>`).join("")}
+          <div><strong>Total : $${prix.reduce((a,b)=>parseFloat(a||0)+parseFloat(b||0),0)}</strong></div>
+          <div>Méthode: ${d.paiement || ""} | ID: ${d.idpaiement || ""}</div>
+          <div>Adresse: ${d.adresse || ""}</div>
         </div>
       </td>
     `;
@@ -91,7 +97,6 @@ function renderOrders(orders){
   });
 }
 
-// Fonction pour afficher/masquer les détails
 function toggleDetails(index){
   const details = document.getElementById(`details${index}`);
   details.style.display = details.style.display === "block" ? "none" : "block";
