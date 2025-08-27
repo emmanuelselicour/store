@@ -5,24 +5,22 @@
   <title>EDS Mini Boutique</title>
   <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/rusj7l.jpg">
   <style>
-    body{font-family:Arial,sans-serif;margin:0;padding:0;background:#f0f2f5;}
-    header, footer{background:#2c3e50;color:white;padding:15px;text-align:center;}
-    nav{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:auto;}
-    nav a{color:white;text-decoration:none;margin:0 10px;}
-    .container{max-width:1200px;margin:20px auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;}
-    .product{background:white;padding:15px;border-radius:10px;text-align:center;box-shadow:0 3px 6px rgba(0,0,0,0.1);}
-    .product img{width:100%;height:200px;object-fit:cover;border-radius:10px;}
-    .product h3{margin:10px 0 5px;font-size:16px;}
-    .product p{margin:5px 0;font-weight:bold;}
-    button{padding:8px 12px;border:none;border-radius:5px;background:#2c3e50;color:white;cursor:pointer;}
-    button:hover{background:#34495e;}
-    #cart{background:white;padding:15px;border-radius:10px;width:300px;margin:20px auto;box-shadow:0 3px 6px rgba(0,0,0,0.2);}
-    #cart h3{margin-top:0;}
-    .cart-item{display:flex;justify-content:space-between;margin-bottom:10px;}
-    .cart-item button{background:red;}
-    form{display:flex;flex-direction:column;margin-top:10px;}
-    form input, form select{margin-bottom:10px;padding:8px;border-radius:5px;border:1px solid #ccc;}
-    form button{background:green;margin-top:5px;}
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f0f2f5; }
+    header, footer { background: #2c3e50; color: white; padding: 15px; text-align: center; }
+    nav a { color: white; text-decoration: none; margin: 0 10px; }
+    .container { max-width: 1200px; margin: 20px auto; display: grid; grid-template-columns: repeat(auto-fill,minmax(250px,1fr)); gap: 15px; }
+    .product { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); text-align: center; word-wrap: break-word; }
+    .product a { text-decoration: none; color: #2c3e50; font-weight: bold; display: block; margin-bottom: 5px; }
+    .product p { margin: 5px 0; font-weight: bold; }
+    button { padding: 8px 12px; border: none; border-radius: 5px; background: #2c3e50; color: white; cursor: pointer; }
+    button:hover { background: #34495e; }
+    #cart { background: white; padding: 15px; border-radius: 10px; max-width: 500px; margin: 20px auto; box-shadow: 0 3px 6px rgba(0,0,0,0.2); word-wrap: break-word; }
+    #cart h3 { margin-top: 0; }
+    .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .cart-item button { background: red; }
+    form { display: flex; flex-direction: column; margin-top: 10px; }
+    form input, form select { margin-bottom: 10px; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+    form button { background: green; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -32,7 +30,6 @@
     <div><h2>EDS Mini Boutique</h2></div>
     <div>
       <a href="#">Accueil</a>
-      <a href="#">Produits</a>
       <a href="#cart">Panier</a>
     </div>
   </nav>
@@ -71,26 +68,26 @@
 
 <script>
 const products=[
-  {id:1, nom:"Robe Fleurie", prix:25, img:"https://picsum.photos/200?random=1"},
-  {id:2, nom:"Top Noir", prix:15, img:"https://picsum.photos/200?random=2"},
-  {id:3, nom:"Jean Slim", prix:30, img:"https://picsum.photos/200?random=3"},
-  {id:4, nom:"T-shirt Blanc", prix:10, img:"https://picsum.photos/200?random=4"},
-  {id:5, nom:"Chaussures Sport", prix:40, img:"https://picsum.photos/200?random=5"},
-  {id:6, nom:"Sac à Main", prix:35, img:"https://picsum.photos/200?random=6"},
-  {id:7, nom:"Montre Classique", prix:50, img:"https://picsum.photos/200?random=7"},
-  {id:8, nom:"Jupe Plissée", prix:22, img:"https://picsum.photos/200?random=8"},
-  {id:9, nom:"Pull Hiver", prix:28, img:"https://picsum.photos/200?random=9"},
-  {id:10, nom:"Bottes", prix:45, img:"https://picsum.photos/200?random=10"},
-  {id:11, nom:"Casquette", prix:12, img:"https://picsum.photos/200?random=11"},
-  {id:12, nom:"Écharpe", prix:18, img:"https://picsum.photos/200?random=12"},
-  {id:13, nom:"Veste", prix:38, img:"https://picsum.photos/200?random=13"},
-  {id:14, nom:"Short Été", prix:20, img:"https://picsum.photos/200?random=14"},
-  {id:15, nom:"Sandales", prix:25, img:"https://picsum.photos/200?random=15"},
-  {id:16, nom:"Chemise Homme", prix:27, img:"https://picsum.photos/200?random=16"},
-  {id:17, nom:"Pull Homme", prix:30, img:"https://picsum.photos/200?random=17"},
-  {id:18, nom:"Robe Soirée", prix:50, img:"https://picsum.photos/200?random=18"},
-  {id:19, nom:"Jean Femme", prix:35, img:"https://picsum.photos/200?random=19"},
-  {id:20, nom:"Sac de Sport", prix:40, img:"https://picsum.photos/200?random=20"}
+  {id:1, nom:"Robe Fleurie", prix:25},
+  {id:2, nom:"Top Noir", prix:15},
+  {id:3, nom:"Jean Slim", prix:30},
+  {id:4, nom:"T-shirt Blanc", prix:10},
+  {id:5, nom:"Chaussures Sport", prix:40},
+  {id:6, nom:"Sac à Main", prix:35},
+  {id:7, nom:"Montre Classique", prix:50},
+  {id:8, nom:"Jupe Plissée", prix:22},
+  {id:9, nom:"Pull Hiver", prix:28},
+  {id:10, nom:"Bottes", prix:45},
+  {id:11, nom:"Casquette", prix:12},
+  {id:12, nom:"Écharpe", prix:18},
+  {id:13, nom:"Veste", prix:38},
+  {id:14, nom:"Short Été", prix:20},
+  {id:15, nom:"Sandales", prix:25},
+  {id:16, nom:"Chemise Homme", prix:27},
+  {id:17, nom:"Pull Homme", prix:30},
+  {id:18, nom:"Robe Soirée", prix:50},
+  {id:19, nom:"Jean Femme", prix:35},
+  {id:20, nom:"Sac de Sport", prix:40}
 ];
 
 let cart=[];
@@ -105,10 +102,9 @@ function renderProducts(){
     const div=document.createElement("div");
     div.className="product";
     div.innerHTML=`
-      <img src="${p.img}" alt="${p.nom}">
-      <h3>${p.nom}</h3>
+      <a href="#cart">${p.nom}</a>
       <p>$${p.prix}</p>
-      <button onclick="addToCart(${p.id})">Commander</button>
+      <button onclick="addToCart(${p.id})">Ajouter au panier</button>
     `;
     container.appendChild(div);
   });
@@ -129,7 +125,6 @@ function renderCart(){
   });
   totalEl.textContent=total;
 
-  // Remplir hidden pour Netlify Form
   document.getElementById("produitCommande").value=cart.map(i=>i.nom).join(", ");
   document.getElementById("prixCommande").value=cart.map(i=>i.prix).join(", ");
 }
