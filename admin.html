@@ -4,17 +4,75 @@
 <meta charset="UTF-8">
 <title>EDS Mini Boutique - Admin</title>
 <style>
-body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+body { 
+  font-family: Arial, sans-serif; 
+  background: #f0f2f5; 
+  margin:0; 
+  padding:20px; 
+}
 h1 { text-align: center; }
-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-th, td { border: 1px solid #ccc; padding: 8px; text-align: center; vertical-align: top; }
-button { padding: 5px 10px; cursor: pointer; border-radius: 5px; border: none; background: #2c3e50; color: white; }
+
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  margin-top: 15px; 
+}
+
+th, td { 
+  border: 1px solid #ccc; 
+  padding: 8px; 
+  text-align: center; 
+  vertical-align: top; 
+}
+
+button { 
+  padding: 5px 10px; 
+  cursor: pointer; 
+  border-radius: 5px; 
+  border: none; 
+  background: #2c3e50; 
+  color: white; 
+}
+
 button:hover { background: #34495e; }
-.details { max-height: 0; overflow: hidden; margin-top: 10px; padding: 0 10px; background: #fff; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); transition: max-height 0.4s ease, padding 0.4s ease; }
-.details.open { max-height: 500px; padding: 10px; }
-.cart-item { display: flex; justify-content: space-between; margin-bottom: 5px; }
-#loginBox { max-width:400px;margin:auto;text-align:center; padding:20px; background:#fff; border-radius:10px; box-shadow:0 3px 6px rgba(0,0,0,0.1);}
-input { padding: 8px; width: 80%; margin-bottom: 10px; border-radius:5px; border:1px solid #ccc;}
+
+.details { 
+  display: none; 
+  margin-top: 10px; 
+  padding: 15px; 
+  background: #ffffff; 
+  border-radius: 10px; 
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15); 
+  text-align: left; 
+  max-width: 400px; 
+}
+
+.cart-item { 
+  display: flex; 
+  justify-content: space-between; 
+  padding: 5px 0; 
+  border-bottom: 1px solid #eee; 
+}
+
+.cart-item:last-child { border-bottom: none; }
+
+#loginBox { 
+  max-width:400px; 
+  margin:auto; 
+  text-align:center; 
+  padding: 20px; 
+  background: #fff; 
+  border-radius: 10px; 
+  box-shadow:0 3px 6px rgba(0,0,0,0.1);
+}
+
+input { 
+  padding: 8px; 
+  width: 80%; 
+  margin-bottom: 10px; 
+  border-radius:5px; 
+  border:1px solid #ccc;
+}
 </style>
 </head>
 <body>
@@ -43,9 +101,9 @@ input { padding: 8px; width: 80%; margin-bottom: 10px; border-radius:5px; border
 </div>
 
 <script>
-const CORRECT_PASSWORD = "04004749"; // mot de passe admin
-const FORM_ID = "commande"; // Form ID Netlify
-let orders = [];
+const CORRECT_PASSWORD = "04004749";
+const API_KEY = "nfp_guuy1oVgA3kZQwj2T9dayVxjEyyhbdQHdad4"; // ton API Key Netlify
+const FORM_ID = "68aeae82b253f900084dc5d4"; // ton Form ID
 
 function checkLogin(){
   const input = document.getElementById("password").value;
@@ -58,47 +116,44 @@ function checkLogin(){
   }
 }
 
-// Récupération depuis Netlify Forms
+// Récupère les commandes depuis Netlify Forms
 async function fetchOrders(){
-  try {
-    const res = await fetch(`https://api.netlify.com/api/v1/forms/68aeae82b253f900084dc5d4/submissions`,{
-      headers:{ "Authorization":"Bearer nfp_guuy1oVgA3kZQwj2T9dayVxjEyyhbdQHdad4" }
+  try{
+    const res = await fetch(`https://api.netlify.com/api/v1/forms/${FORM_ID}/submissions`, {
+      headers: { "Authorization": `Bearer ${API_KEY}` }
     });
-    const submissions = await res.json();
-    orders = submissions.map(sub => ({
-      nom: sub.data.nom,
-      prenom: sub.data.prenom,
-      email: sub.data.email,
-      numero: sub.data.numero,
-      produits: sub.data.produit.split(", "),
-      prix: sub.data.prix.split(", "),
-      adresse: sub.data.adresse,
-      paiement: sub.data.paiement,
-      idpaiement: sub.data.idpaiement
-    }));
-    renderOrders();
+    const data = await res.json();
+    renderOrders(data);
   } catch(err){
-    console.error(err);
+    console.error("Erreur récupération Netlify:", err);
   }
 }
 
-function renderOrders(){
+function renderOrders(orders){
   const table = document.getElementById("ordersTable");
   table.innerHTML = "";
+
   orders.forEach((order,index)=>{
+    const d = order.data;
+    const produits = d.produit ? d.produit.split(",") : [];
+    const prix = d.prix ? d.prix.split(",") : [];
+
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${order.nom}</td>
-      <td>${order.prenom}</td>
-      <td>${order.email}</td>
-      <td>${order.numero}</td>
+      <td>${d.nom || ""}</td>
+      <td>${d.prenom || ""}</td>
+      <td>${d.email || ""}</td>
+      <td>${d.numero || ""}</td>
       <td>
         <button onclick="toggleDetails(${index})">PLUS ></button>
         <div class="details" id="details${index}">
-          ${order.produits.map((p,i)=>`<div class="cart-item">${p} - $${order.prix[i]}</div>`).join("")}
-          <div><strong>Total : $${order.prix.reduce((a,b)=>parseFloat(a)+parseFloat(b),0)}</strong></div>
-          <div>Méthode: ${order.paiement} | ID: ${order.idpaiement}</div>
-          <div>Adresse: ${order.adresse}</div>
+          ${produits.map((p,i)=>`<div class="cart-item">
+            <span>${p}</span>
+            <span>$${prix[i]||"0"}</span>
+          </div>`).join("")}
+          <div style="margin-top:10px;"><strong>Total : $${prix.reduce((a,b)=>parseFloat(a||0)+parseFloat(b||0),0)}</strong></div>
+          <div>Méthode: ${d.paiement || ""} | ID: ${d.idpaiement || ""}</div>
+          <div>Adresse: ${d.adresse || ""}</div>
         </div>
       </td>
     `;
@@ -108,9 +163,10 @@ function renderOrders(){
 
 function toggleDetails(index){
   const details = document.getElementById(`details${index}`);
-  details.classList.toggle("open");
+  details.style.display = details.style.display === "block" ? "none" : "block";
 }
 </script>
 
 </body>
 </html>
+
