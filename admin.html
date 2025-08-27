@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>EDS Mini Boutique - Admin</title>
+  <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/rusj7l.jpg">
+  <style>
+    body{font-family:Arial,sans-serif;padding:20px;background:#f0f2f5;}
+    .login-box, .admin-box{background:white;padding:25px;border-radius:10px;max-width:900px;margin:40px auto;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+    h1,h2{text-align:center;}
+    input[type="password"], input[type="text"]{width:80%;padding:10px;margin:10px 0;border-radius:5px;border:1px solid #ccc;}
+    button{padding:8px 12px;border:none;border-radius:5px;background:#2c3e50;color:white;cursor:pointer;margin:5px;}
+    button:hover{background:#34495e;}
+    table{width:100%;border-collapse:collapse;margin-top:20px;}
+    th,td{border:1px solid #ccc;padding:8px;text-align:center;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    th{background:#2c3e50;color:white;}
+    tr:nth-child(even){background:#f9f9f9;}
+    .search-box{margin-bottom:15px;text-align:center;}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login" class="login-box">
+  <h2>🔐 Connexion Admin</h2>
+  <input type="password" id="password" placeholder="Mot de passe">
+  <br>
+  <button onclick="checkLogin()">Se connecter</button>
+  <p id="error" style="color:red; display:none;">Mot de passe incorrect ❌</p>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="admin-box" style="display:none;">
+  <h1>Admin - Commandes</h1>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Rechercher par Nom, Prénom, Produit, Prix, ID Paiement" onkeyup="filterOrders()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Numéro</th>
+        <th>Adresse</th>
+        <th>Produit(s)</th>
+        <th>Prix</th>
+        <th>Méthode Paiement</th>
+        <th>ID Paiement</th>
+      </tr>
+    </thead>
+    <tbody id="orderTable"></tbody>
+  </table>
+</div>
+
+<script>
+  const CORRECT_PASSWORD = "04004749"; // mot de passe admin
+  const API_KEY = "nfp_BqkEuke2jBuc718Ltih45Bf2MnqXLqr2db0f"; 
+  const FORM_ID = "68aeae82b253f900084dc5d4"; // ID du formulaire commande Netlify
+
+  let orders = [];
+  let filteredOrders = [];
+
+  function checkLogin(){
+    const input = document.getElementById("password").value;
+    if(input === CORRECT_PASSWORD){
+      document.getElementById("login").style.display="none";
+      document.getElementById("admin").style.display="block";
+      fetchOrders();
+    }else{
+      document.getElementById("error").style.display="block";
+    }
+  }
+
+  async function fetchOrders(){
+    try{
+      const res = await fetch(`https://api.netlify.com/api/v1/forms/${FORM_ID}/submissions`, {
+        headers: { "Authorization": `Bearer ${API_KEY}` }
+      });
+      const submissions = await res.json();
+      orders = submissions.map(sub => ({
+        nom: sub.data.nom || "",
+        prenom: sub.data.prenom || "",
+        email: sub.data.email || "",
+        numero: sub.data.numero || "",
+        adresse: sub.data.adresse || "",
+        produit: sub.data.produit || "",
+        prix: sub.data.prix || "",
+        paiement: sub.data.paiement || "",
+        idpaiement: sub.data.idpaiement || ""
+      }));
+      filteredOrders = [...orders];
+      renderOrders();
+    }catch(err){
+      console.error("Erreur récupération Netlify:", err);
+    }
+  }
+
+  const table = document.getElementById("orderTable");
+
+  function renderOrders(){
+    table.innerHTML="";
+    filteredOrders.forEach(o=>{
+      const row=document.createElement("tr");
+      row.innerHTML=`
+        <td title="${o.nom}">${o.nom}</td>
+        <td title="${o.prenom}">${o.prenom}</td>
+        <td title="${o.email}">${o.email}</td>
+        <td title="${o.numero}">${o.numero}</td>
+        <td title="${o.adresse}">${o.adresse}</td>
+        <td title="${o.produit}">${o.produit}</td>
+        <td title="${o.prix}">${o.prix}</td>
+        <td title="${o.paiement}">${o.paiement}</td>
+        <td title="${o.idpaiement}">${o.idpaiement}</td>
+      `;
+      table.appendChild(row);
+    });
+  }
+
+  function filterOrders(){
+    const term = document.getElementById("searchInput").value.toLowerCase();
+    filteredOrders = orders.filter(o => 
+      o.nom.toLowerCase().includes(term) ||
+      o.prenom.toLowerCase().includes(term) ||
+      o.produit.toLowerCase().includes(term) ||
+      o.prix.toLowerCase().includes(term) ||
+      o.idpaiement.toLowerCase().includes(term)
+    );
+    renderOrders();
+  }
+</script>
+
+</body>
+</html>
